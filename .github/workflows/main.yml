@@ -96,8 +96,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Docker Login
-        run: docker login --username "$DOCKER_USER" --password-stdin <<< "$DOCKER_PASS"
+      - name: Login to DockerHub
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ secrets.RELEASE_DOCKER_USER }}
+          password: ${{ secrets.RELEASE_DOCKER_PASS }}
       - name: Push images with "latest" tag
         env:
           CTR_TAG: latest
