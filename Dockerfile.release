@@ -1,0 +1,21 @@
+# syntax = docker/dockerfile:1.4
+FROM --platform=$BUILDPLATFORM cybwan/xnet:0.9.1-amd64 AS amd64
+FROM --platform=$BUILDPLATFORM cybwan/xnet:0.9.1-arm64 AS arm64
+
+FROM --platform=$BUILDPLATFORM cybwan/ubuntu:22.04
+
+RUN apt-get update && \
+  apt-get install -y iproute2 jq && \
+  apt-get purge --auto-remove && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=0 /fsm-xnet-engine /fsm-xnet-engine
+COPY --from=0 /usr/local/bin/xnat /usr/local/bin/xnat
+COPY --from=0 /app/.fsm/.xcni .fsm/.xcni
+COPY --from=0 /app/.fsm/.xnet.kern.o .fsm/.xnet.kern.o
+COPY --from=0 /usr/local/bin/bpftool /usr/local/bin/bpftool
+
+STOPSIGNAL SIGQUIT
