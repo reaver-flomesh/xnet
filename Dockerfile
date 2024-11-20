@@ -35,7 +35,7 @@ ADD Makefile .
 RUN mkdir -p bin
 RUN make bpf-build
 
-FROM --platform=$BUILDPLATFORM ubuntu:22.04
+FROM ubuntu:22.04
 
 RUN apt-get update && \
   apt-get install -y iproute2 iputils-arping jq && \
